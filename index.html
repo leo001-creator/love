@@ -3,21 +3,117 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>V + D = ❤️</title>
+    <title>I Love You Animacija</title>
+    <style>
+        /* Pagrindiniai puslapio nustatymai */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0d0d1a;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+            font-family: 'Arial', sans-serif;
+        }
 
-    <link rel="stylesheet" href="style.css">
+        /* Širdies konteineris ekrano centre */
+        .heart-container {
+            position: relative;
+            width: 300px;
+            height: 300px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            animation: pulse 1.5s infinite ease-in-out;
+        }
+
+        /* Pulsavimo animacija visai širdžiai */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        /* Žodžių "I LOVE YOU" stilius ir išsidėstymas */
+        .love-text {
+            position: absolute;
+            color: #ff3366;
+            font-size: 11px;
+            font-weight: bold;
+            text-transform: uppercase;
+            white-space: nowrap;
+            letter-spacing: 1px;
+            text-shadow: 0 0 8px rgba(255, 51, 102, 0.6);
+        }
+
+        /* Centrinis užrašas */
+        .center-text {
+            position: absolute;
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 900;
+            text-align: center;
+            z-index: 10;
+            text-shadow: 0 0 15px #ff3366, 0 0 25px #ff3366;
+            background: rgba(13, 13, 26, 0.6);
+            padding: 8px 15px;
+            border-radius: 20px;
+            border: 1px solid rgba(255, 51, 102, 0.3);
+        }
+    </style>
 </head>
-
 <body>
 
-    <canvas id="canvas"></canvas>
-
-    <div class="love-text">
-        <div class="main-text">V + D = <span>♡</span></div>
-        <div class="sub-text">forever & always</div>
+    <div class="heart-container" id="heart">
+        <!-- Centrinis užrašas -->
+        <div class="center-text">V+D=❤️</div>
     </div>
 
-    <script src="app.js"></script>
+    <script>
+        const container = document.getElementById('heart');
+        const totalWords = 60; // Kiek žodžių sudarys širdelę
 
+        // Širdies matematinė formulė (Parametrinė funkcija)
+        function getHeartPoint(t) {
+            // t turi būti radianais (nuo 0 iki 2*PI)
+            const x = 16 * Math.pow(Math.sin(t), 3);
+            const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+            return { x, y };
+        }
+
+        // Sugeneruojame žodžius aplink širdies formą
+        for (let i = 0; i < totalWords; i++) {
+            const t = (i / totalWords) * 2 * Math.PI;
+            const point = getHeartPoint(t);
+
+            // Padidiname koordinates, kad širdis būtų matoma ekrane
+            const scaleX = 9; 
+            const scaleY = 9; 
+
+            const posX = point.x * scaleX;
+            // Invertuojame Y, nes naršyklėje Y didėja į apačią
+            const posY = -point.y * scaleY; 
+
+            // Sukuriame tekstinį elementą
+            const textNode = document.createElement('div');
+            textNode.className = 'love-text';
+            textNode.innerText = 'I LOVE YOU';
+
+            // Pozicionuojame elementą centre su poslinkiu
+            textNode.style.left = `calc(50% + ${posX}px)`;
+            textNode.style.top = `calc(50% + ${posY}px)`;
+
+            // Pasukame tekstą pagal širdies liniją, kad atrodytų gražiau
+            const angle = t * (180 / Math.PI) - 90;
+            textNode.style.transform = `translate(-50%, -50%) rotate(${angle}deg)`;
+
+            // Pridedame nedidelį atsitiktinį animacijos vėlavimą bangavimo efektui
+            textNode.style.animation = `pulse 1.5s infinite ease-in-out`;
+            textNode.style.animationDelay = `${(i / totalWords) * 0.5}s`;
+
+            container.appendChild(textNode);
+        }
+    </script>
 </body>
 </html>
